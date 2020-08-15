@@ -13,7 +13,6 @@ const {
 
 //get All Plant Products.
 router.get('/', async (req, res) => {
-  //I couldn't get getAllProducts to see the plantProducts function so I used allProducts to import ProductController.
   const products =  await allProducts.plantProducts();
   setTimeout(() => {
         if (products === "400") {
@@ -53,38 +52,25 @@ router.post('/', async (req, res) => {
 
 
 //Update an item in the product collection.
-router.put('/:id', (req,res) =>{
+router.put('/:id', async (req,res) =>{
       
-    //Validate
-    //If invalid, return 400
+    //Use Joi for (validation?
     const {error} = validateProduct(req.body);
     if (error) {
-        //400 Bad Request
         res.status(400).send(error.details[0].message);
         return;
     }
     
-    //Update course
     product.name = req.body.name;
-    //Return the updated course
     res.send(product);
     
 });
 
 //Delete a product item from the product collections.
 router.delete('/:name', async (req, res) => {
-    const products =  await allProducts.deleteProduct(req.params.name);
+    let products =  await allProducts.deleteProduct(req.params.name);
     setTimeout(() => {
-        if (products === "400") {
-            res.status("400").send("Error deleting product from database");
-        }else{
-            res.status("200").send(products);
-        }
-  }, 1000);
+        res.json(products);
+    }, 1000);
 });
-
-//router.route('/').get(getAllProducts).post(createProduct);
-//
-//router.route('/:id').get(getProduct).patch(updateProduct).delete(deleteProduct);
-
 module.exports = router;
