@@ -16,6 +16,7 @@ const reviewArticleRouter = require('./routes/reviewArticleRoutes');
 const reviewGreenhouseRouter = require('./routes/reviewGreenhouseRoutes');
 
 const app = express();
+app.use(express.json());
 
 //Devlopment middleware
 if (process.env.NODE_ENV === 'development') {
@@ -31,7 +32,7 @@ const limiter = rateLimit({
   max: 100, // allow 100 requests from the same IP for 1 hour
   message: 'Too Many request from that IP ! Please try again after 1 hour.',
 });
-app.use('/api', limiter); // apply the limiter middleware for all the routes that starts with `/api`
+//app.use('/api', limiter); // apply the limiter middleware for all the routes that starts with `/api`
 
 //Body Parser; reading the data from the body to req.body(max 15kb)
 app.use(express.json({ limit: '15kb' }));
@@ -43,19 +44,24 @@ app.use(xss());
 
 //ROUTES
 
-app.use('/api/v1/plants', plantRouter);
-app.use('/api/v1/users', userRouter);
+//app.use('/api/v1/plants', plantRouter);
+//app.use('/api/v1/users', userRouter);
 app.use('/api/v1/products', productRouter);
-app.use('/api/v1/greenhouses', greenhouseRouter);
-app.use('/api/v1/articles', articleRouter);
-app.use('/api/v1/reviews-article', reviewArticleRouter);
-app.use('/api/v1/reviews-greenhouse', reviewGreenhouseRouter);
+//app.use('/api/v1/greenhouses', greenhouseRouter);
+//app.use('/api/v1/articles', articleRouter);
+//app.use('/api/v1/reviews-article', reviewArticleRouter);
+//app.use('/api/v1/reviews-greenhouse', reviewGreenhouseRouter);
 
-app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
-});
+//app.all('*', (req, res, next) => {
+/// next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
+//});
 
 //GLOBAL ERROR HANDLER MIDDLEWARE
 app.use(globalErrorHandler);
+
+//PORT
+ const port = process.env.PORT || 3000;
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
 
 module.exports = app;
